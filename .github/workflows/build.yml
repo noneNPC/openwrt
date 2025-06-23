@@ -14,29 +14,29 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup OpenWRT SDK
+    - name: Setup OpenWRT SDK 23.05.3
       run: |
-        wget https://downloads.openwrt.org/releases/23.05.4/targets/aarch64/cortexa53/openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl_eabi.tar.xz
-        tar -xf openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl_eabi.tar.xz
+        wget https://downloads.openwrt.org/releases/23.05.3/targets/aarch64/cortexa53/openwrt-sdk-23.05.3-aarch64-cortexa53_gcc-12.3.0_musl_eabi.tar.xz
+        tar -xf openwrt-sdk-23.05.3-aarch64-cortexa53_gcc-12.3.0_musl_eabi.tar.xz
 
     - name: Copy plugin to SDK
       run: |
-        cp -r luci-app-smart-mini ./openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl_eabi/package/
+        cp -r luci-app-smart-mini ./openwrt-sdk-23.05.3-aarch64-cortexa53_gcc-12.3.0_musl_eabi/package/
 
     - name: Prepare SDK feeds and config
       run: |
-        cd openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl_eabi
+        cd openwrt-sdk-23.05.3-aarch64-cortexa53_gcc-12.3.0_musl_eabi
         ./scripts/feeds update -a || true
         ./scripts/feeds install -a || true
         make defconfig
 
     - name: Compile luci-app-smart-mini package only
       run: |
-        cd openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl_eabi
+        cd openwrt-sdk-23.05.3-aarch64-cortexa53_gcc-12.3.0_musl_eabi
         make package/luci-app-smart-mini/compile V=s
 
     - name: Upload compiled IPK artifacts
       uses: actions/upload-artifact@v4
       with:
         name: luci-app-smart-mini-ipk
-        path: openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl_eabi/bin/packages/**/luci/luci-app-smart-mini*.ipk
+        path: openwrt-sdk-23.05.3-aarch64-cortexa53_gcc-12.3.0_musl_eabi/bin/packages/**/luci/luci-app-smart-mini*.ipk
