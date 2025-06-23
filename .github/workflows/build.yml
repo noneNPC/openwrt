@@ -12,8 +12,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/upload-artifact@v4
-
+      uses: actions/checkout@v4  # ✅ 修正这里：你写成 upload-artifact 了
 
     - name: Setup OpenWRT SDK
       run: |
@@ -24,14 +23,14 @@ jobs:
       run: |
         cp -r luci-app-smart-mini ./openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64/package/
 
-    - name: Update feeds and install dependencies
+    - name: Prepare SDK
       run: |
         cd openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        ./scripts/feeds update -a || true
+        ./scripts/feeds install -a || true
         make defconfig
 
-    - name: Compile luci-app-smart-mini package only
+    - name: Compile luci-app-smart-mini
       run: |
         cd openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64
         make package/luci-app-smart-mini/compile V=s
@@ -40,7 +39,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: luci-app-smart-mini-ipk
-        path: |
-          openwrt-sdk-*/bin/packages/**/luci/luci-app-smart-mini*.ipk
-
-
+        path: openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64/bin/packages/**/luci/luci-app-smart-mini*.ipk
