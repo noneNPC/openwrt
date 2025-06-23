@@ -2,8 +2,7 @@ name: Build luci-app-smart-mini
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,32 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup OpenWRT SDK (mediatek/filogic)
-      run: |
-        wget https://downloads.openwrt.org/releases/23.05.4/targets/mediatek/filogic/openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64.tar.xz
-        tar -xf openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64.tar.xz
+      - name: Download SDK
+        run: |
+          wget https://downloads.openwrt.org/releases/23.05.4/targets/mediatek/filogic/openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64.tar.xz
+          tar xf openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64.tar.xz
 
-    - name: Copy plugin to SDK
-      run: |
-        cp -r luci-app-smart-mini ./openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64/package/
+      - name: Copy plugin
+        run: |
+          cp -r luci-app-smart-mini ./openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64/package/
 
-    - name: Prepare SDK feeds and config
-      run: |
-        cd openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64
-        ./scripts/feeds update -a || true
-        ./scripts/feeds install -a || true
-        make defconfig
+      - name: Prepare
+        run: |
+          cd openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64
+          ./scripts/feeds update -a || true
+          ./scripts/feeds install -a || true
+          make defconfig
 
-    - name: Compile luci-app-smart-mini package only
-      run: |
-        cd openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64
-        make package/luci-app-smart-mini/compile V=s
+      - name: Compile plugin
+        run: |
+          cd openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64
+          make package/luci-app-smart-mini/compile V=s
 
-    - name: Upload compiled IPK artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: luci-app-smart-mini-ipk
-        path: openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64/bin/packages/**/luci/luci-app-smart-mini*.ipk
+      - name: Upload IPK
+        uses: actions/upload-artifact@v4
+        with:
+          name: luci-app-smart-mini-ipk
+          path: openwrt-sdk-23.05.4-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64/bin/packages/**/luci/luci-app-smart-mini*.ipk
