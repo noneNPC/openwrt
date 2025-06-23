@@ -1,0 +1,44 @@
+name: Build luci-app-smart-mini
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup OpenWRT SDK
+      run: |
+        wget https://downloads.openwrt.org/releases/23.05.4/targets/aarch64/cortexa53/openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64.tar.xz
+        tar -xf openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64.tar.xz
+
+    - name: Copy plugin to SDK
+      run: |
+        cp -r luci-app-smart-mini ./openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64/package/
+
+    - name: Update feeds and install dependencies
+      run: |
+        cd openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+        make defconfig
+
+    - name: Compile luci-app-smart-mini package only
+      run: |
+        cd openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64
+        make package/luci-app-smart-mini/compile V=s
+
+    - name: Upload IPK artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: luci-app-smart-mini-ipk
+        path: |
+          openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64/bin/packages/aarch64_cortex-a53/luci/luci-app-smart-mini*.ipk
+
