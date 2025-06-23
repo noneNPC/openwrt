@@ -37,7 +37,7 @@ jobs:
         make package/luci-app-smart-mini/compile V=s
 
     - name: Upload IPK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: luci-app-smart-mini-ipk
         path: |
