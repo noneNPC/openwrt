@@ -16,8 +16,8 @@ jobs:
 
     - name: Setup OpenWRT SDK
       run: |
-        wget https://downloads.openwrt.org/releases/23.05.4/targets/aarch64/cortexa53/openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64.tar.xz
-        tar -xf openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64.tar.xz
+        wget https://downloads.openwrt.org/releases/23.05.4/targets/aarch64/cortexa53/openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.tar.xz
+        tar -xf openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.tar.xz
 
     - name: Copy plugin to SDK
       run: |
