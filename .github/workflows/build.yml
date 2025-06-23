@@ -40,6 +40,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: luci-app-smart-mini-ipk
-        path: |
-          openwrt-sdk-23.05.4-aarch64-cortexa53_gcc-12.3.0_musl.Linux-x86_64/bin/packages/aarch64_cortex-a53/luci/luci-app-smart-mini*.ipk
+        path: openwrt-sdk-23.05.4-aarch64-cortexa53*/bin/packages/aarch64_cortex-a53/luci/luci-app-smart-mini*.ipk
 
